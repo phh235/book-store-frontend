@@ -1,6 +1,6 @@
-import List from "../Product/List";
+import ProductList from "../Product/ProductList";
 import BestPick from "./components/BestPick";
-import Carosel from "./components/Carousel";
+import Carousel from "./components/Carousel";
 // import Product from "./components/Product";
 
 function Home() {
@@ -19,10 +19,11 @@ function Home() {
           </div>
         </div>
       </div>
-      <Carosel />
+      <Carousel />
       <BestPick />
       {/* <Product /> */}
-      <List />
+      {/* <List /> */}
+      <ProductList />
       {/* <section
         className="py-13 bg-cover"
         style={{ backgroundImage: "url(src/assets/img/covers/cover-4.jpg)" }}

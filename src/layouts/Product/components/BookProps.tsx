@@ -1,18 +1,67 @@
-import React from "react";
-import Book from "../../../models/Book";
+import React, { useEffect, useState } from "react";
+import BookModel from "../../../models/BookModel";
+import ImageModel from "../../../models/ImageModel";
+import { getAllImage } from "../../../api/ImageAPI";
 
-interface BookProps {
-  book: Book;
+interface BookPropsInterface {
+  book: BookModel;
 }
 
-const BookProps: React.FC<BookProps> = ({ book }) => {
+const BookProps: React.FC<BookPropsInterface> = (props) => {
+  const maSach: number = props.book.maSach;
+
+  const [imageList, setImageList] = useState<ImageModel[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    getAllImage(maSach)
+      .then((imageData) => {
+        setImageList(imageData);
+        setDataLoading(false);
+      })
+      .catch((error) => {
+        setDataLoading(false);
+        setErrorMessage(error.message);
+      });
+  }, []); // chỉ gọi 1 lần
+
+  if (dataLoading) {
+    return (
+      <div>
+        <h1>Đang tải dữ liệu</h1>
+      </div>
+    );
+  }
+  if (errorMessage) {
+    return (
+      <div>
+        <h1>Gặp lỗi: {errorMessage}</h1>
+      </div>
+    );
+  }
+
+  let duLieuAnh:string = "";
+  if (imageList[0] && imageList[0].duLieuAnh) {
+    duLieuAnh = imageList[0].duLieuAnh;
+  }
   return (
     <div className="col-6 col-md-4 col-lg-3">
       <div className="card mb-7">
         <div className="card-img">
           <a className="card-img-hover" href="product.html">
-            <img className="card-img-top card-img-back" src={book.imageUrl} alt="..." />
-            <img className="card-img-top card-img-front" src={book.imageUrl} alt="..." />
+            <img
+              className="card-img-top card-img-back"
+              src={duLieuAnh}
+              alt={props.book.tenSach}
+              style={{ height: "380px" }}
+            />
+            <img
+              className="card-img-top card-img-front"
+              src={duLieuAnh}
+              alt={props.book.tenSach}
+              style={{ height: "380px" }}
+            />
           </a>
           <div className="card-actions">
             <span className="card-action">
@@ -39,18 +88,18 @@ const BookProps: React.FC<BookProps> = ({ book }) => {
         <div className="card-body px-0">
           <div className="fs-xs">
             <a className="text-muted" href="shop.html">
-              {book.title}
+              {props.book.tenSach}
             </a>
           </div>
           <div className="fw-bold">
             <a className="text-body" href="product.html">
-              {book.description}
+              {props.book.moTa}
             </a>
           </div>
           <div className="fw-bold text-muted" style={{ textDecoration: "line-through" }}>
-            {book.originalPrice}
+            {props.book.giaNiemYet}
           </div>
-          <div className="fw-bold text-muted">{book.price}</div>
+          <div className="fw-bold text-muted">{props.book.giaBan}</div>
         </div>
       </div>
     </div>
